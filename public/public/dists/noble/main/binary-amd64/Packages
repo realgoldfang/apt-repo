@@ -1,0 +1,48 @@
+Package: howler
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/h/howler/howler_0.1.0_amd64.deb
+Size: 5392948
+MD5sum: 592b923ce646d7bc8e6f77c09e9417b3
+SHA1: b472f7852390c664a79bb3fbfbdd3472edfffc1a
+SHA256: 4c6649e28b7bf7f414deaabdae9a21be7e2b22e050c7acddb83446ec145cccea
+SHA512: f9ffd202aa9f2f4b80e765c6d8dffc821ce1cbadfc82c10dd8d3b4fbb188170eb10fb76ff9b737ecc69f36354402457ea843c4b5e2f6cbc87888208ba832e0ae
+Description: howler from howler
+
+Package: howler-gui
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/h/howler-gui/howler-gui_0.1.0_amd64.deb
+Size: 3909860
+MD5sum: f6dfe06d5374eb2e9ef0e97cb534b671
+SHA1: 32dcf1334d3e348a21e64a9b2f4d8b2a9c8667d9
+SHA256: 036d3e6e85835643b4be404fdb3a7518943284bc7ee2803ae5f0254279dce9fa
+SHA512: a5d7598a903a094799006511e126aebf198ff42311f7dec36dc1fc30b47fc8ebbc661d005bbfe0bbb2b02b9da436edf1c94d4918a93a2a95533ba2d9250bd076
+Description: howler-gui from howler
+
+Package: howler-tui
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/h/howler-tui/howler-tui_0.1.0_amd64.deb
+Size: 1415938
+MD5sum: c585fd97db884f3a7769ada6cdd0d713
+SHA1: 5502ed8c4e4fe24dc5bac5d74c31b63289c895c1
+SHA256: 0e083eb72ac3fc76ee2f71b33b07d2b4bc04edc2ba543aa95ac4ca420caeeb5d
+SHA512: 500ed3476b07b164e65ee9d56046b77438efa63eaf7ebe2d319703f27bb8f5efc319ec6c606b665a7196b94a3625275ec7a5d53dbe4a24b7665cc19681d0b5db
+Description: howler-tui from howler
+
+Package: russtly
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/r/russtly/russtly_0.1.0_amd64.deb
+Size: 6935242
+MD5sum: 4ebdf461211f3d3494d3b3746b3fc6ea
+SHA1: cf03fb1f705dcf9f929b1e3cfe52033c42091689
+SHA256: 0f1f1b2c24ee24b9762f729ddf5abcd9c95f714d3c0270134027894a61717e87
+SHA512: 845a81d30772222108d3252938c206e1110592df4471e57dae861b938f1b7334f63225e86609be1ba5fbc935e0958edf74f87c4608d780730a9554709d83db2a
+Description: russtly from russtly
+
