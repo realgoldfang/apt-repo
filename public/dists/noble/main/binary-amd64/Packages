@@ -1,0 +1,12 @@
+Package: russtly
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/r/russtly/russtly_0.1.0_amd64.deb
+Size: 6935242
+MD5sum: 4ebdf461211f3d3494d3b3746b3fc6ea
+SHA1: cf03fb1f705dcf9f929b1e3cfe52033c42091689
+SHA256: 0f1f1b2c24ee24b9762f729ddf5abcd9c95f714d3c0270134027894a61717e87
+SHA512: 845a81d30772222108d3252938c206e1110592df4471e57dae861b938f1b7334f63225e86609be1ba5fbc935e0958edf74f87c4608d780730a9554709d83db2a
+Description: russtly from russtly
+
