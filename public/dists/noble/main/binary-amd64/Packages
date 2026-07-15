@@ -1,0 +1,36 @@
+Package: howler
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/h/howler/howler_0.1.0_amd64.deb
+Size: 5392848
+MD5sum: 0db7bb70e0bdce78e7beda78727d31eb
+SHA1: 5b893a0aa6142442e57ac9940911cbd4d5ac48d0
+SHA256: 8869dc4fa2a20ccedef220401afe520a73cc8f80732c361b05625324a8cc3e17
+SHA512: 7bbacebd581074c8ecd879c60c565cb4cec2da1760e0376b2c8cba798bbe0a5c2610a374e0b97cd5e7e37727d4ab94b362c913230e8ddb4fe09f12a07f03c137
+Description: howler from howler
+
+Package: howler-gui
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/h/howler-gui/howler-gui_0.1.0_amd64.deb
+Size: 3909734
+MD5sum: f1ebcbb5f72d858f578845e897ae1fec
+SHA1: 6af4b79e4c1b319bea65c52812837f328dba8f9e
+SHA256: e4d358cfc936197ab7922b93f44d23a2d8a76843ae6eaf16388175efab09062e
+SHA512: aef62a30585ad91aed4de4c1688c99f8f110ddbf9ee10343ba213122685aadc2b4e883e8cf48ff0be195854fcb12d9753c8ba0a2eae52486962e672835cd45c7
+Description: howler-gui from howler
+
+Package: howler-tui
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 0.1.0
+Filename: pool/main/h/howler-tui/howler-tui_0.1.0_amd64.deb
+Size: 1416118
+MD5sum: 872e64490d3b2d2fc41e872a045d134b
+SHA1: 8a3d669d7dc36b57e43a307700986c0f361471c6
+SHA256: fc43ed257fc2355a1281e0ec4d245f3f3043b1ac308dac1d63894fd2ee0754e1
+SHA512: e5ca1e4c90a44cd6c92ec7f08111556f43cb7acbbbdabb0a0d7f49566e01b2f17150468368df0580613c1ee36db81653c5b0ba1df7f5574830c0efa185c6ab55
+Description: howler-tui from howler
+
