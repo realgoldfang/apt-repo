@@ -1,6 +1,0 @@
-Origin: tmp/aptly-root/public noble
-Label: tmp/aptly-root/public noble
-Archive: noble
-Suite: noble
-Architecture: amd64
-Component: main

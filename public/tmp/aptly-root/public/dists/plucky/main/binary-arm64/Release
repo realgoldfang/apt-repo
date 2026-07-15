@@ -1,6 +1,0 @@
-Origin: tmp/aptly-root/public plucky
-Label: tmp/aptly-root/public plucky
-Archive: plucky
-Suite: plucky
-Architecture: arm64
-Component: main
