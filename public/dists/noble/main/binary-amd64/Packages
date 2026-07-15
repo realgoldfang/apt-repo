@@ -34,3 +34,15 @@ SHA256: fc43ed257fc2355a1281e0ec4d245f3f3043b1ac308dac1d63894fd2ee0754e1
 SHA512: e5ca1e4c90a44cd6c92ec7f08111556f43cb7acbbbdabb0a0d7f49566e01b2f17150468368df0580613c1ee36db81653c5b0ba1df7f5574830c0efa185c6ab55
 Description: howler-tui from howler
 
+Package: luna-nspire
+Maintainer: goldfang <apt@realgoldfang.dev>
+Architecture: amd64
+Version: 2.1.0
+Filename: pool/main/l/luna-nspire/luna-nspire_2.1.0_amd64.deb
+Size: 196634
+MD5sum: c1700350dfde8a9480e48ae421b1ca50
+SHA1: f1ac9c90ffe29a231949be3afeb16ba16095aa75
+SHA256: f051d8ed8786d285f1ee38529ccd23f14beb29c145e49158a5d28392cf492aa0
+SHA512: f4f00a3c773dbd5953f3d3d49ab3c90c9f71f71c043297bf93bf32f4d82dd713f2f01633eb3605858d4b3856324f12058b64339b181573f6a03d92002cc17424
+Description: luna-nspire from luna-rs
+
