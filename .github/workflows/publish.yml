@@ -1,0 +1,168 @@
+# .github/workflows/publish.yml
+# Lives in realgoldfang/apt-repo. Triggered by a repository_dispatch from
+# each source repo's build-deb.yml after it uploads its .deb to its own
+# GitHub release. Concurrency here is real — same repo, same workflow —
+# so this is what actually prevents two source-repo builds from racing
+# each other's push against apt-repo/main.
+
+name: Publish deb
+
+on:
+  repository_dispatch:
+    types: [deb-built]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apt-repo-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_REPO: ${{ github.event.client_payload.source_repo }}
+      TAG: ${{ github.event.client_payload.tag }}
+      PACKAGE_NAME: ${{ github.event.client_payload.package_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download deb from source repo release
+        env:
+          GH_TOKEN: ${{ secrets.APT_PAT }}
+        run: |
+          mkdir -p /tmp/debs
+          gh release download "${TAG}" --repo "${SOURCE_REPO}" \
+            --pattern '*.deb' --dir /tmp/debs
+
+      - name: Import GPG key
+        env:
+          APTLY_GPG_KEY: ${{ secrets.APTLY_GPG_KEY }}
+        run: echo "${APTLY_GPG_KEY}" | base64 -d | gpg --batch --import
+
+      - name: Install aptly
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq aptly
+
+      - name: Restore existing packages
+        run: |
+          mkdir -p /tmp/existing-debs
+          for CODENAME in noble plucky; do
+            for ARCH in amd64 arm64; do
+              PKGS="public/dists/${CODENAME}/main/binary-${ARCH}/Packages.gz"
+              if [ -f "${PKGS}" ]; then
+                echo "==> restoring debs for ${CODENAME}/${ARCH}"
+                zcat "${PKGS}" | grep '^Filename:' | while read -r line; do
+                  path="${line#Filename: }"
+                  if [ -f "public/${path}" ]; then
+                    cp "public/${path}" "/tmp/existing-debs/$(basename "${path}")" 2>/dev/null || true
+                  fi
+                done
+              fi
+            done
+          done
+          echo "==> restored $(find /tmp/existing-debs -name '*.deb' 2>/dev/null | wc -l) existing debs"
+
+      - name: Publish with aptly
+        run: |
+          export APTLY_ROOT="/tmp/aptly-root"
+          mkdir -p "${APTLY_ROOT}"
+
+          cat > /tmp/aptly.conf << EOF
+          {
+            "rootDir": "${APTLY_ROOT}",
+            "downloadConcurrency": 4,
+            "downloadPath": "${APTLY_ROOT}/downloads",
+            "databasePath": "${APTLY_ROOT}/db",
+            "publicPath": "",
+            "serveInAPoint": false
+          }
+          EOF
+          sed -i '/^$/d' /tmp/aptly.conf
+          sed -i 's/^ *//' /tmp/aptly.conf
+
+          KEY_ID="goldfang-apt-repo <apt@realgoldfang.dev>"
+
+          for CODENAME in noble plucky; do
+            REPO="goldfang-${CODENAME}"
+            aptly -config=/tmp/aptly.conf repo create \
+              -distribution="${CODENAME}" -component="main" \
+              -architectures="amd64,arm64" "${REPO}" 2>/dev/null || true
+          done
+
+          RUNNER_CODENAME="$(lsb_release -cs)"
+          SUPPORTED="${RUNNER_CODENAME}"
+          case "${RUNNER_CODENAME}" in noble|plucky) ;; *) SUPPORTED="noble" ;; esac
+
+          echo "==> adding existing debs to ${SUPPORTED}"
+          find /tmp/existing-debs -name '*.deb' 2>/dev/null | while read deb; do
+            aptly -config=/tmp/aptly.conf repo add "goldfang-${SUPPORTED}" "${deb}" || true
+          done
+
+          echo "==> adding new debs to ${SUPPORTED}"
+          find /tmp/debs -name '*.deb' 2>/dev/null | while read deb; do
+            echo "    + $(basename "${deb}")"
+            aptly -config=/tmp/aptly.conf repo add "goldfang-${SUPPORTED}" "${deb}" || true
+          done
+
+          for CODENAME in noble plucky; do
+            REPO="goldfang-${CODENAME}"
+            aptly -config=/tmp/aptly.conf repo show "${REPO}" 2>/dev/null || continue
+
+            if aptly -config=/tmp/aptly.conf publish list -raw 2>/dev/null | grep -q "^${CODENAME} "; then
+              echo "==> updating publish ${CODENAME}"
+              aptly -config=/tmp/aptly.conf publish update -batch \
+                -gpg-key="${KEY_ID}" -distribution="${CODENAME}" \
+                -architectures="amd64,arm64" "${CODENAME}" || true
+            else
+              echo "==> creating publish ${CODENAME}"
+              aptly -config=/tmp/aptly.conf publish repo -batch \
+                -gpg-key="${KEY_ID}" -distribution="${CODENAME}" \
+                -component="main" -architectures="amd64,arm64" \
+                "${REPO}" || true
+            fi
+          done
+
+          echo "==> aptly public tree:"
+          find "${APTLY_ROOT}/public/" -type f | head -30
+
+      - name: Copy published repo into checkout
+        run: |
+          APTLY_PUBLIC="/tmp/aptly-root/public"
+          if [ ! -d "${APTLY_PUBLIC}" ]; then
+            echo "error: aptly did not produce public/ output"
+            exit 1
+          fi
+          rm -rf public
+          cp -r "${APTLY_PUBLIC}" public
+          echo "==> copied aptly output to public/"
+          find public/ -type f | head -30
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git commit -m "apt: add ${PACKAGE_NAME} ${TAG} (from ${SOURCE_REPO})"
+          # Belt-and-suspenders: concurrency group above already serializes
+          # runs of this workflow, but retry once with a rebase in case
+          # something else (a manual push) touched main in between.
+          for attempt in 1 2 3; do
+            if git push; then break; fi
+            echo "==> push failed, pulling and retrying (attempt ${attempt})"
+            git pull --rebase
+            sleep $((attempt * 3))
+          done
+
+      - name: Trigger site deploy
+        env:
+          GH_TOKEN: ${{ secrets.APT_PAT }}
+        run: |
+          gh workflow run deploy-site.yml \
+            --repo realgoldfang/realgoldfang.github.io
